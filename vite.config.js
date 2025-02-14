@@ -1,7 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-
-// https://vite.dev/config/
+// vite.config.js
+import { defineConfig } from "vite";
 export default defineConfig({
-  plugins: [react()],
+    // Directorio raíz de tu proyecto
+    root: './src'
 })

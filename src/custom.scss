@@ -1,0 +1,16 @@
+// Variables personalizadas
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+
+// Importa Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+body {
+  padding-top: 60px;
+  background-color: #f8f9fa;
+}
+
+.card-custom {
+  margin: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
