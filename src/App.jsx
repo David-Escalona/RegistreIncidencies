@@ -1,34 +1,27 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Home from './views/Home';
-import About from './views/About';
-import Contact from './views/Contact';
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import { Routes, Route } from 'react-router-dom';
+import './App.css'
+import Header from './components/header'
+import Panel from './pages/panel';
+import Login from './pages/login';
+import Registro from './pages/registro';
+import Comentarios from './pages/comentarios';
 
-const App = () => (
-  <Router>
-    <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">MiApp</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/about">Acerca de</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/contact">Contacto</Link></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <div className="container mt-4">
+function App() {
+
+  return (
+    <>
+      <Header></Header>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
+         <Route path="/" element={<Panel/>} />
+         <Route path="/login" element={<Login/>} />
+         <Route path="/registro" element={<Registro/>} />
+         <Route path="/comentarios" element={<Comentarios/>} />
       </Routes>
-    </div>
-  </Router>
-);
+    </>
+  )
+}
 
-export default App;
+export default App
