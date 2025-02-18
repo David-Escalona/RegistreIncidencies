@@ -19,8 +19,6 @@ export default function Header(){
                </div>
             </nav>
          </header>
-         <div className="container mt-4">
-         </div>
       </>
    );
 }
