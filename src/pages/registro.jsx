@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../index.css';
 
 export default function Registro() {
   const [email, setEmail] = useState('');
@@ -30,9 +31,9 @@ export default function Registro() {
   };
 
   return (
-    <main className="container mt-5">
+    <main className="container mt-5 d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
       <div className="pt-5">
-        <h1 className="w-100 text-center">Registro</h1>
+        <h1 className="w-100 text-center as">Registro</h1>
         <form
           onSubmit={handleRegister}
           className="form p-4 border shadow bordered mt-5 mx-auto"
