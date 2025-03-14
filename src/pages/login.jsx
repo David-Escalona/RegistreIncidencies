@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function login() {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null); // Para manejar los errores
@@ -21,7 +21,7 @@ export default function login() {
       // Si las credenciales son correctas, guardar la sesión en localStorage
       localStorage.setItem('usuarioActual', JSON.stringify(user));
       setError(null); // Limpiar el error en caso de éxito
-      navigate('/'); // Redirigir al usuario al panel o a la página principal
+      navigate('/panel'); // Redirigir al usuario al panel
     } else {
       // Si las credenciales son incorrectas, mostrar el mensaje de error
       setError('Usuario o contraseña incorrectos');
