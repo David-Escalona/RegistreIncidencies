@@ -1,76 +1,55 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../index.css';
 
-export default function Registro() {
+function Registro() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null); // Estado para el mensaje de error
-  const navigate = useNavigate();
+  const [contrasenya, setContrasenya] = useState('');
+  const [missatge, setMissatge] = useState('');
 
-  // Función que maneja el registro
-  const handleRegister = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Verificar si el usuario ya está registrado en localStorage
-    const users = JSON.parse(localStorage.getItem('dades_usuaris')) || [];
+    const usuaris = JSON.parse(localStorage.getItem('dades_usuaris')) || [];
+    const usuariExisteix = usuaris.some(usuari => usuari.email === email);
 
-    const userExists = users.some(user => user.email === email); // Comprobar si ya existe el usuario
-
-    if (userExists) {
-      // Si el usuario ya existe, mostrar el mensaje de error
-      setError('El usuario ya está registrado');
-    } else {
-      // Si no existe, agregarlo al localStorage
-      const newUser = { email, password };
-      users.push(newUser);
-      localStorage.setItem('dades_usuaris', JSON.stringify(users));
-      setError(null); // Limpiar cualquier error anterior
-      navigate('/login'); // Redirigir a la página de login
+    if (usuariExisteix) {
+      setMissatge('Aquest usuari ja està registrat.');
+      return;
     }
+
+    const nouUsuari = { email, contrasenya };
+    usuaris.push(nouUsuari);
+    localStorage.setItem('dades_usuaris', JSON.stringify(usuaris));
+
+    setMissatge('Registre completat amb èxit!');
+    setEmail('');
+    setContrasenya('');
   };
 
   return (
-    <main className="container mt-5 d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <div className="pt-5">
-        <h1 className="w-100 text-center as">Registro</h1>
-        <form
-          onSubmit={handleRegister}
-          className="form p-4 border shadow bordered mt-5 mx-auto"
-          style={{ width: "400px" }}
-        >
-          <label htmlFor="email" className="mt-2 form-label">
-            Usuario:
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="usuario@mail.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <div>
+      <h2>Registre</h2>
+      <form onSubmit={handleSubmit}>
+        <label>Email:</label>
+        <input 
+          type="email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          required 
+        />
 
-          <label htmlFor="pass" className="mt-2 form-label">
-            Contraseña:
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        <label>Contrasenya:</label>
+        <input 
+          type="password" 
+          value={contrasenya} 
+          onChange={(e) => setContrasenya(e.target.value)} 
+          required 
+        />
 
-          {error && <div className="alert alert-danger mt-3">{error}</div>} {/* Mostrar el error */}
-
-          <input
-            type="submit"
-            className="mt-4 w-100 btn btn-primary"
-            value="Registrar"
-          />
-        </form>
-      </div>
-    </main>
+        <button type="submit">Registrar</button>
+      </form>
+      {missatge && <p>{missatge}</p>}
+    </div>
   );
 }
+
+export default Registro;

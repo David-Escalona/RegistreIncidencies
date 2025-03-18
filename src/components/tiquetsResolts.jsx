@@ -4,7 +4,6 @@ export default function TiquetsResolts() {
   const [tiquetsResolts, setTiquetsResolts] = useState([]);
 
   useEffect(() => {
-    // Cargar los tiques resueltos desde localStorage
     const tiquetsResoltsData = JSON.parse(localStorage.getItem('dades_tiquets'))?.filter(tiquet => tiquet.status === 'resuelto') || [];
     setTiquetsResolts(tiquetsResoltsData);
   }, []);

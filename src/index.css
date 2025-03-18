@@ -99,3 +99,7 @@ button:focus-visible {
   width: 100%;
   max-width: 400px;
 }
+
+.margene{
+  padding: 120px;
+}

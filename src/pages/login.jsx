@@ -4,26 +4,21 @@ import { useNavigate } from 'react-router-dom';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null); // Para manejar los errores
-  const navigate = useNavigate(); // Para redirigir al usuario
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  // Función para manejar el login
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Recuperar los usuarios del localStorage
     const users = JSON.parse(localStorage.getItem('dades_usuaris')) || [];
 
-    // Comprobar si el usuario existe y la contraseña coincide
     const user = users.find(user => user.email === email && user.password === password);
 
     if (user) {
-      // Si las credenciales son correctas, guardar la sesión en localStorage
       localStorage.setItem('usuarioActual', JSON.stringify(user));
-      setError(null); // Limpiar el error en caso de éxito
-      navigate('/panel'); // Redirigir al usuario al panel
+      setError(null);
+      navigate('/panel');
     } else {
-      // Si las credenciales son incorrectas, mostrar el mensaje de error
       setError('Usuario o contraseña incorrectos');
     }
   };
@@ -61,7 +56,7 @@ export default function Login() {
               required
             />
 
-            {error && <div className="alert alert-danger mt-3">{error}</div>} {/* Mostrar el mensaje de error */}
+            {error && <div className="alert alert-danger mt-3">{error}</div>}
 
             <input
               type="submit"
