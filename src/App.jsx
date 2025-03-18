@@ -39,7 +39,8 @@ function App() {
         <Route path="/" element={<Panel tiquetsPendents={tiquetsPendents} tiquetsResolts={tiquetsResolts} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
-        <Route path="/comentarios" element={<Comentarios />} />
+        <Route path="/comentarios/:id" element={<Comentarios />} />
+
         <Route path="/panel" element={<Panel />} />
       </Routes>
     </>

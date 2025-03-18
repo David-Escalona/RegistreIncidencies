@@ -46,6 +46,10 @@ export default function Panel() {
     }
   };
 
+  const handleComentarios = (id) => {
+    navigate(`/comentarios/${id}`);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('usuarioActual');
     navigate('/login');
@@ -89,6 +93,7 @@ export default function Panel() {
                 <td>{ticket.alumne}</td>
                 <td>
                   <button className="btn btn-success me-2" onClick={() => resolverTicket(ticket.id)}>Resolver</button>
+                  <button className="btn btn-primary me-2" onClick={() => handleComentarios(ticket.id)}>Comentarios</button>
                   <button className="btn btn-danger" onClick={() => eliminarTicket(ticket.id)}>Eliminar</button>
                 </td>
               </tr>
