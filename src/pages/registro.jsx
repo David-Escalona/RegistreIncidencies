@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Registro() {
   const [email, setEmail] = useState('');
   const [contrasenya, setContrasenya] = useState('');
-  const [missatge, setMissatge] = useState('');
+  const navigate = useNavigate(); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,7 +13,7 @@ function Registro() {
     const usuariExisteix = usuaris.some(usuari => usuari.email === email);
 
     if (usuariExisteix) {
-      setMissatge('Aquest usuari ja està registrat.');
+      alert('Usuario ya registrado');
       return;
     }
 
@@ -20,34 +21,41 @@ function Registro() {
     usuaris.push(nouUsuari);
     localStorage.setItem('dades_usuaris', JSON.stringify(usuaris));
 
-    setMissatge('Registre completat amb èxit!');
-    setEmail('');
-    setContrasenya('');
+    navigate('/login');
   };
 
   return (
-    <div>
-      <h2>Registre</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Email:</label>
-        <input 
-          type="email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          required 
-        />
+    <div className="container d-flex justify-content-center align-items-center mt-5">
+      <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '400px' }}>
+        <h2 className="text-center mb-4">Registre</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Email:</label>
+            <input
+              id="email"
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <label>Contrasenya:</label>
-        <input 
-          type="password" 
-          value={contrasenya} 
-          onChange={(e) => setContrasenya(e.target.value)} 
-          required 
-        />
+          <div className="mb-3">
+            <label htmlFor="contrasenya" className="form-label">Contrasenya:</label>
+            <input
+              id="contrasenya"
+              type="password"
+              className="form-control"
+              value={contrasenya}
+              onChange={(e) => setContrasenya(e.target.value)}
+              required
+            />
+          </div>
 
-        <button type="submit">Registrar</button>
-      </form>
-      {missatge && <p>{missatge}</p>}
+          <button type="submit" className="btn btn-primary w-100">Registrar</button>
+        </form>
+      </div>
     </div>
   );
 }
