@@ -25,7 +25,10 @@ export default function Header() {
                     <Link className="nav-link" to="/panel">PANEL</Link>
                   </button>
                   <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/comentarios">COMENTARIOS</Link>
+                    <Link className="nav-link" to="/login">LOGIN</Link>
+                  </button>
+                  <button className="btn btn-secondary ms-2">
+                    <Link className="nav-link" to="/registro">REGISTRO</Link>
                   </button>
                 </>
               )}
