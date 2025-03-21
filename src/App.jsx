@@ -5,28 +5,33 @@ import Panel from './pages/panel';
 import Login from './pages/login';
 import Registro from './pages/registro';
 import Comentarios from './pages/comentarios';
+import Tiquet from './vista/ticket';
+
+// 🔹 Función para obtener tickets desde localStorage
+function getTiquets(key) {
+  return JSON.parse(localStorage.getItem(key)) || [];
+}
+
+// 🔹 Función para guardar tickets en localStorage
+function setTiquets(key, tiquets) {
+  localStorage.setItem(key, JSON.stringify(tiquets));
+}
+
+// 🔹 Función para agregar un nuevo ticket
+function addTiquet(nuevoTiquet) {
+  const tiquetsPendents = getTiquets('dades_tiquets_pendents');
+  nuevoTiquet.id = tiquetsPendents.length > 0 ? tiquetsPendents[tiquetsPendents.length - 1].id + 1 : 1; // Generar un nuevo ID
+  const tiquetsActualizados = [...tiquetsPendents, nuevoTiquet];
+  setTiquets('dades_tiquets_pendents', tiquetsActualizados);
+}
 
 function App() {
   const [tiquetsPendents, setTiquetsPendents] = useState([]);
   const [tiquetsResolts, setTiquetsResolts] = useState([]);
 
   useEffect(() => {
-    const tiquetsPendentsData = [
-      { id: 123459, data: '18/04/2023', aula: 'T6', grup: 'DAW1', ordinador: 'PC3', descripcio: 'Error d’impressora', alumne: 'Ana Martínez' },
-      { id: 123460, data: '19/04/2023', aula: 'T8', grup: 'DAW2', ordinador: 'PC4', descripcio: 'Problema d’accés a arxius', alumne: 'Pedro Gómez' },
-      { id: 123461, data: '20/04/2023', aula: 'T6', grup: 'DAW1', ordinador: 'PC1', descripcio: 'Aplicació es tanca inesperadament', alumne: 'Sofía Fernández' },
-      { id: 123462, data: '21/04/2023', aula: 'T7', grup: 'DAW2', ordinador: 'PC2', descripcio: 'Problema de connexió a la xarxa', alumne: 'Luis Torres' },
-      { id: 123463, data: '22/04/2023', aula: 'T8', grup: 'DAW1', ordinador: 'PC3', descripcio: 'Arxius corruptes', alumne: 'Carolina Ramírez' },
-    ];
-
-    const tiquetsResoltsData = [
-      { id: 123457, data: '16/04/2023', dataResolucio: '15/05/2023', aula: 'T7', grup: 'DAW2', ordinador: 'PC1', descripcio: 'Problema de connexió a Internet', alumne: 'Maria López' },
-      { id: 123458, data: '17/04/2023', dataResolucio: '15/05/2023', aula: 'T8', grup: 'DAW1', ordinador: 'PC2', descripcio: 'Pantalla en blanc', alumne: 'Juan Rodríguez' },
-      { id: 123459, data: '18/04/2023', dataResolucio: '15/05/2023', aula: 'T8', grup: 'DAW1', ordinador: 'PC3', descripcio: 'Error d’impressora', alumne: 'Ana Martínez' },
-    ];
-
-    localStorage.setItem('dades_tiquets_pendents', JSON.stringify(tiquetsPendentsData));
-    localStorage.setItem('dades_tiquets_resolts', JSON.stringify(tiquetsResoltsData));
+    const tiquetsPendentsData = getTiquets('dades_tiquets_pendents');
+    const tiquetsResoltsData = getTiquets('dades_tiquets_resolts');
 
     setTiquetsPendents(tiquetsPendentsData);
     setTiquetsResolts(tiquetsResoltsData);
@@ -36,12 +41,15 @@ function App() {
     <>
       <Header />
       <Routes>
-        <Route path="/" element={<Panel tiquetsPendents={tiquetsPendents} tiquetsResolts={tiquetsResolts} />} />
+        <Route
+          path="/"
+          element={<Panel tiquetsPendents={tiquetsPendents} tiquetsResolts={tiquetsResolts} addTiquet={addTiquet} />}
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/comentarios/:id" element={<Comentarios />} />
-
         <Route path="/panel" element={<Panel />} />
+        <Route path="/nou-tiquet" element={<Tiquet addTiquet={addTiquet} />} />
       </Routes>
     </>
   );
