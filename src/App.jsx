@@ -5,6 +5,7 @@ import Panel from './pages/panel';
 import Login from './pages/login';
 import Registro from './pages/registro';
 import Comentarios from './pages/comentarios';
+import Tiquet from './vista/ticket';
 
 // 🔹 Funció per obtenir els tiquets des de localStorage
 function getTiquets(key) {
@@ -71,6 +72,7 @@ function App() {
         <Route path="/registro" element={<Registro />} />
         <Route path="/comentarios/:id" element={<Comentarios />} />
         <Route path="/panel" element={<Panel tiquetsPendents={tiquetsPendents} tiquetsResolts={tiquetsResolts} />} />
+        <Route path="/tiquet" element={<Tiquet addTiquet={addTiquet} />} />
       </Routes>
     </>
   );

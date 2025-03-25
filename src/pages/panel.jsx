@@ -93,7 +93,13 @@ export default function Panel() {
                 <td>{ticket.alumne}</td>
                 <td>
                   <button className="btn btn-success me-2" onClick={() => resolverTicket(ticket.id)}>Resolver</button>
-                  <button className="btn btn-warning me-2" onClick={() => navigate('/nou-tiquet')}>Crear Tiquet</button>
+                  <button 
+  className="btn btn-warning me-2" 
+  onClick={() => navigate('/tiquet')}
+>
+  Crear Tiquet
+</button>
+
                   <button className="btn btn-primary me-2" onClick={() => handleComentarios(ticket.id)}>Comentarios</button>
                   <button className="btn btn-danger" onClick={() => eliminarTicket(ticket.id)}>Eliminar</button>
                 </td>
