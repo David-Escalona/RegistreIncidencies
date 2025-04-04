@@ -8,17 +8,14 @@ const inicioSesion = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // Obtenir usuaris guardats a localStorage
         const usuarisGuardats = JSON.parse(localStorage.getItem("dades_usuaris")) || [];
 
-        // Buscar un usuari que coincideixi amb l'email i contrasenya
         const usuariTrobat = usuarisGuardats.find(
             (usuari) => usuari.email === email && usuari.contrasenya === contrasenya
         );
 
         if (usuariTrobat) {
             setMissatge("✅ Inici de sessió correcte!");
-            // Aquí podries redirigir a una altra pàgina o guardar l'estat de sessió
         } else {
             setMissatge("❌ Credencials incorrectes. Torna-ho a intentar.");
         }
@@ -49,7 +46,6 @@ const inicioSesion = () => {
                 <button type="submit">Iniciar Sessió</button>
             </form>
 
-            {/* Mostra el missatge si existeix */}
             {missatge && <p>{missatge}</p>}
         </div>
     );

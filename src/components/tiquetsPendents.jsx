@@ -4,7 +4,6 @@ export default function TiquetsPendents() {
   const [tiquetsPendents, setTiquetsPendents] = useState([]);
 
   useEffect(() => {
-    // Cargar los tiques pendientes desde localStorage
     const tiquetsPendentsData = JSON.parse(localStorage.getItem('dades_tiquets'))?.filter(tiquet => tiquet.status === 'pendiente') || [];
     setTiquetsPendents(tiquetsPendentsData);
   }, []);
@@ -38,6 +37,8 @@ export default function TiquetsPendents() {
               <td>{tiquet.alumno}</td>
               <td>
                 <button className="btn btn-success" title="Resolver ticket">Resolver</button>
+              </td>
+              <td>
               </td>
               <td>
                 <button className="btn btn-warning" title="Añadir comentario">
