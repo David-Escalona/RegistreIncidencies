@@ -1,80 +1,54 @@
-/* 📌 Contenedor principal */
 .container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  /* 📌 Título */
-  h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-  }
-  
-  /* 📌 Tabla */
-  .user-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  /* 📌 Encabezados */
-  .user-table th {
-    background: #007bff;
-    color: white;
-    padding: 12px;
-    text-align: left;
-  }
-  
-  /* 📌 Filas */
-  .user-table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  /* 📌 Alternar colores */
-  .user-table tr:nth-child(even) {
-    background: #f8f9fa;
-  }
-  
-  /* 📌 Selector de rol */
-  .user-table select {
-    padding: 6px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-  }
-  
-  /* 📌 Botón de eliminar */
-  .delete-btn {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
-  }
-  
-  .delete-btn:hover {
-    background: #b02a37;
-  }
-  
-  /* 📌 Responsividad */
-  @media (max-width: 600px) {
-    .user-table {
-      font-size: 14px;
-    }
-  
-    .delete-btn {
-      padding: 6px 10px;
-    }
-  }
-  
+  max-width: 900px;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.8rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+}
+
+.user-table thead tr {
+  border-bottom: 2px solid #0d6efd;
+}
+
+.user-table tbody tr {
+  background: #f8f9fa;
+  transition: background-color 0.25s ease;
+  border-radius: 10px;
+}
+
+.user-table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.user-table td, .user-table th {
+  padding: 0.75rem 1.5rem;
+}
+
+.user-table select.form-select {
+  max-width: 120px;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease;
+}
+
+.user-table select.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+  outline: none;
+}
+
+.btn-danger {
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #b02a37;
+  border-color: #b02a37;
+}

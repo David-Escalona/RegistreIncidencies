@@ -19,10 +19,10 @@ export default function Panel() {
 
     const storedTicketsPendientes = JSON.parse(localStorage.getItem('dades_tiquets_pendents')) || [];
     const storedTicketsResueltos = JSON.parse(localStorage.getItem('dades_tiquets_resolts')) || [];
-    
+
     setTicketsPendientes(storedTicketsPendientes);
     setTicketsResueltos(storedTicketsResueltos);
-    
+
     setLoading(false);
   }, [navigate]);
 
@@ -30,6 +30,12 @@ export default function Panel() {
     const nuevosTickets = ticketsPendientes.filter(ticket => ticket.id !== id);
     setTicketsPendientes(nuevosTickets);
     localStorage.setItem('dades_tiquets_pendents', JSON.stringify(nuevosTickets));
+  };
+
+  const eliminarTicketResuelto = (id) => {
+    const nuevosTickets = ticketsResueltos.filter(ticket => ticket.id !== id);
+    setTicketsResueltos(nuevosTickets);
+    localStorage.setItem('dades_tiquets_resolts', JSON.stringify(nuevosTickets));
   };
 
   const resolverTicket = (id) => {
@@ -40,7 +46,10 @@ export default function Panel() {
       setTicketsPendientes(nuevosTicketsPendientes);
       localStorage.setItem('dades_tiquets_pendents', JSON.stringify(nuevosTicketsPendientes));
 
-      const nuevosTicketsResueltos = [...ticketsResueltos, ticket];
+      const nuevosTicketsResueltos = [...ticketsResueltos, {
+        ...ticket,
+        dataResolucio: new Date().toLocaleDateString()
+      }];
       setTicketsResueltos(nuevosTicketsResueltos);
       localStorage.setItem('dades_tiquets_resolts', JSON.stringify(nuevosTicketsResueltos));
     }
@@ -92,16 +101,34 @@ export default function Panel() {
                 <td>{ticket.descripcio}</td>
                 <td>{ticket.alumne}</td>
                 <td>
-                  <button className="btn btn-success me-2" onClick={() => resolverTicket(ticket.id)}>Resolver</button>
-                  <button 
-  className="btn btn-warning me-2" 
-  onClick={() => navigate('/tiquet')}
->
-  Crear Tiquet
-</button>
-
-                  <button className="btn btn-primary me-2" onClick={() => handleComentarios(ticket.id)}>Comentarios</button>
-                  <button className="btn btn-danger" onClick={() => eliminarTicket(ticket.id)}>Eliminar</button>
+                  <button
+                    className="btn btn-success me-2"
+                    onClick={() => resolverTicket(ticket.id)}
+                    title="Resolver ticket"
+                  >
+                    Resolver
+                  </button>
+                  <button
+                    className="btn btn-warning me-2"
+                    onClick={() => navigate('/tiquet')}
+                    title="Editar"
+                  >
+                    <i className="bi bi-pencil-square"></i>
+                  </button>
+                  <button
+                    className="btn btn-primary me-2"
+                    onClick={() => handleComentarios(ticket.id)}
+                    title="Comentarios"
+                  >
+                    <i className="bi bi-chat-dots"></i>
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => eliminarTicket(ticket.id)}
+                    title="Eliminar"
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
                 </td>
               </tr>
             ))
@@ -125,6 +152,7 @@ export default function Panel() {
             <th>Ordenador</th>
             <th>Descripción</th>
             <th>Alumno</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -139,11 +167,27 @@ export default function Panel() {
                 <td>{ticket.ordinador}</td>
                 <td>{ticket.descripcio}</td>
                 <td>{ticket.alumne}</td>
+                <td>
+                  <button
+                    className="btn btn-primary me-2"
+                    onClick={() => handleComentarios(ticket.id)}
+                    title="Comentarios"
+                  >
+                    <i className="bi bi-chat-dots"></i>
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => eliminarTicketResuelto(ticket.id)}
+                    title="Eliminar"
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="8" className="text-center">No hay tickets resueltos</td>
+              <td colSpan="9" className="text-center">No hay tickets resueltos</td>
             </tr>
           )}
         </tbody>

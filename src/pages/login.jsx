@@ -11,57 +11,54 @@ export default function Login() {
     e.preventDefault();
 
     const users = JSON.parse(localStorage.getItem('dades_usuaris')) || [];
-
     const user = users.find(user => user.email === email && user.contrasenya === password);
 
     if (user) {
-      localStorage.setItem('usuarioActual', JSON.stringify(user)); 
-      setError(null); 
-      navigate('/panel');  
+      localStorage.setItem('usuarioActual', JSON.stringify(user));
+      window.dispatchEvent(new Event('usuarioActualizado'));
+      setError(null);
+      navigate('/panel');
     } else {
       setError('Usuario o contraseña incorrectos');
     }
   };
 
   return (
-    <main className="container mt-5">
-      <div className="pt-5">
-        <h1 className="w-100 text-center">Login</h1>
-        <form
-          onSubmit={handleLogin}
-          className="form p-4 border shadow rounded mt-5 mx-auto"
-          style={{ width: "400px" }}
-        >
-          <label htmlFor="email" className="mt-2 form-label">
-            Usuario:
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="usuario@mail.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <main className="container d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+      <div className="card shadow-lg p-4 border-0" style={{ maxWidth: '420px', width: '100%' }}>
+        <h2 className="text-center mb-4 fw-bold text-primary">
+          <i className="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+        </h2>
 
-          <label htmlFor="pass" className="mt-2 form-label">
-            Contraseña:
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        <form onSubmit={handleLogin}>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Correo electrónico</label>
+            <input
+              type="email"
+              className="form-control"
+              placeholder="usuario@mail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          {error && <div className="alert alert-danger mt-3">{error}</div>}
+          <div className="mb-3">
+            <label htmlFor="pass" className="form-label">Contraseña</label>
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="submit"
-            className="mt-4 w-100 btn btn-primary"
-            value="Entrar"
-          />
+          {error && <div className="alert alert-danger mt-2">{error}</div>}
+
+          <button type="submit" className="btn btn-dark w-100 mt-3">
+            <i className="bi bi-arrow-right-circle me-2"></i>Entrar
+          </button>
         </form>
       </div>
     </main>

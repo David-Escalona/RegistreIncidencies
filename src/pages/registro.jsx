@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function Registro() {
   const [email, setEmail] = useState('');
   const [contrasenya, setContrasenya] = useState('');
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,12 +25,14 @@ function Registro() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center mt-5">
-      <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '400px' }}>
-        <h2 className="text-center mb-4">Registre</h2>
+    <main className="container d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+      <div className="card shadow-lg p-4 border-0" style={{ maxWidth: '420px', width: '100%' }}>
+        <h2 className="text-center mb-4 fw-bold text-primary">
+          <i className="bi bi-person-plus-fill me-2"></i>Registro
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email:</label>
+            <label htmlFor="email" className="form-label">Correo electrónico</label>
             <input
               id="email"
               type="email"
@@ -38,11 +40,12 @@ function Registro() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              placeholder="usuario@mail.com"
             />
           </div>
 
           <div className="mb-3">
-            <label htmlFor="contrasenya" className="form-label">Contrasenya:</label>
+            <label htmlFor="contrasenya" className="form-label">Contraseña</label>
             <input
               id="contrasenya"
               type="password"
@@ -50,13 +53,16 @@ function Registro() {
               value={contrasenya}
               onChange={(e) => setContrasenya(e.target.value)}
               required
+              placeholder="••••••••"
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">Registrar</button>
+          <button type="submit" className="btn btn-dark w-100 mt-3">
+            <i className="bi bi-person-check-fill me-2"></i>Registrar
+          </button>
         </form>
       </div>
-    </div>
+    </main>
   );
 }
 

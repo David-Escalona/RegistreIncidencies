@@ -1,47 +1,59 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import '../index.css';
 
 export default function Header() {
-  const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+  const [usuarioActual, setUsuarioActual] = useState(JSON.parse(localStorage.getItem("usuarioActual")));
+
+  useEffect(() => {
+    const actualizarUsuario = () => {
+      const usuario = JSON.parse(localStorage.getItem("usuarioActual"));
+      setUsuarioActual(usuario);
+    };
+
+    // Escuchar cambios personalizados (inicio o cierre de sesión)
+    window.addEventListener("usuarioActualizado", actualizarUsuario);
+
+    return () => {
+      window.removeEventListener("usuarioActualizado", actualizarUsuario);
+    };
+  }, []);
 
   return (
-    <>
-      <header className="header">
-        <nav className="navbar navbar-light bg-light">
-          <div className="container-fluid d-flex justify-content-between align-items-center">
-            <div className="d-flex justify-content-center">
-              {!usuarioActual ? (
-                <>
-                  <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/login">LOGIN</Link>
-                  </button>
-                  <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/registro">REGISTRO</Link>
-                  </button>
-                  <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/usuaris">Usuarios</Link>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/panel">PANEL</Link>
-                  </button>
-                  <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/login">LOGIN</Link>
-                  </button>
-                  <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/registro">REGISTRO</Link>
-                  </button>
-                  <button className="btn btn-secondary ms-2">
-                    <Link className="nav-link" to="/usuaris">Usuarios</Link>
-                  </button>
-                </>
-              )}
-            </div>
+    <header className="header">
+      <nav className="navbar navbar-light bg-light px-3">
+        <div className="container-fluid d-flex justify-content-between align-items-center w-100">
+          
+          {/* Izquierda: Título */}
+          <div className="fw-bold">
+            Gestión de Incidencias FPllefià
           </div>
-        </nav>
-      </header>
-    </>
+
+          {/* Centro: Botones de navegación */}
+          <div className="d-flex justify-content-center gap-2">
+            {!usuarioActual ? (
+              <>
+                <Link className="btn btn-dark" to="/login">Inicio Sesión</Link>
+                <Link className="btn btn-dark" to="/registro">Registro</Link>
+              </>
+            ) : (
+              <>
+                <Link className="btn btn-dark" to="/panel">Panel</Link>
+                <Link className="btn btn-dark" to="/usuaris">Usuarios</Link>
+                <Link className="btn btn-dark" to="/login">Login</Link>
+                <Link className="btn btn-dark" to="/registro">Registro</Link>
+              </>
+            )}
+          </div>
+
+          {/* Derecha: Correo del usuario */}
+          <div>
+            {usuarioActual && (
+              <span className="text-muted small">{usuarioActual.email}</span>
+            )}
+          </div>
+        </div>
+      </nav>
+    </header>
   );
 }
