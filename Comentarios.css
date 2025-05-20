@@ -1,0 +1,25 @@
+.comentarios-wrapper {
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.comentarios-container {
+  width: 100%;
+  max-width: 800px;
+  padding: 30px;
+  background-color: #fff;
+}
+
+.comentario-form {
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.comentario-card {
+  border-radius: 10px;
+  background-color: #f8f9fa;
+}
