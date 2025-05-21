@@ -7,36 +7,32 @@ import Registro from './pages/registro';
 import Comentarios from './pages/comentarios';
 import Tiquet from './vista/ticket';
 import Usuaris from './vista/Usuaris';
+import EditarTicket from './pages/EditarTicket'; 
 
-// 🔹 Funció per obtenir els tiquets des de localStorage
 function getTiquets(key) {
   const tiquets = localStorage.getItem(key);
   return tiquets ? JSON.parse(tiquets) : [];
 }
 
-// 🔹 Funció per guardar els tiquets a localStorage
 function setTiquets(key, tiquets) {
   localStorage.setItem(key, JSON.stringify(tiquets));
 }
 
-// 🔹 Funció per afegir un nou tiquet
 function addTiquet(nouTiquet) {
   const tiquetsPendents = getTiquets('dades_tiquets_pendents');
-  nouTiquet.id = tiquetsPendents.length > 0 ? tiquetsPendents[tiquetsPendents.length - 1].id + 1 : 1; // Generar un nou ID
+  nouTiquet.id = tiquetsPendents.length > 0 ? tiquetsPendents[tiquetsPendents.length - 1].id + 1 : 1;
   const tiquetsActualitzats = [...tiquetsPendents, nouTiquet];
-  setTiquets('dades_tiquets_pendents', tiquetsActualitzats);  // Guardem els tiquets actualitzats
+  setTiquets('dades_tiquets_pendents', tiquetsActualitzats);
 }
 
 function App() {
   const [tiquetsPendents, setTiquetsPendents] = useState([]);
   const [tiquetsResolts, setTiquetsResolts] = useState([]);
 
-  // Carregar els tiquets en el primer renderitzat
   useEffect(() => {
     const tiquetsPendentsData = getTiquets('dades_tiquets_pendents');
     const tiquetsResoltsData = getTiquets('dades_tiquets_resolts');
 
-    // Si no hi ha dades a localStorage, utilitzem les dades de prova
     if (tiquetsPendentsData.length === 0) {
       const tiquetsPendentsProva = [
         { id: 123459, data: '18/04/2023', aula: 'T6', grup: 'DAW1', ordinador: 'PC3', descripcio: 'Error d’impressora', alumne: 'Ana Martínez' },
@@ -73,8 +69,9 @@ function App() {
         <Route path="/registro" element={<Registro />} />
         <Route path="/comentarios/:id" element={<Comentarios />} />
         <Route path="/panel" element={<Panel tiquetsPendents={tiquetsPendents} tiquetsResolts={tiquetsResolts} />} />
-        <Route path="/tiquet" element={<Tiquet addTiquet={addTiquet} />} />
+        <Route path="/ticket" element={<Tiquet addTiquet={addTiquet} />} />
         <Route path="/usuaris" element={<Usuaris />} />
+        <Route path="/editar/:id" element={<EditarTicket />} />
       </Routes>
     </>
   );

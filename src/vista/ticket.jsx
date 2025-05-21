@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../Tiquet.css';
 
@@ -7,6 +7,17 @@ const Tiquet = () => {
   const [ordinador, setOrdinador] = useState('');
   const [descripcio, setDescripcio] = useState('');
   const navigate = useNavigate();
+
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('usuarioActual'));
+    if (!user) {
+      navigate('/login');
+    } else {
+      setUsuario(user);
+    }
+  }, [navigate]);
 
   const getTiquets = () => JSON.parse(localStorage.getItem('dades_tiquets_pendents')) || [];
   const setTiquets = (tiquets) => localStorage.setItem('dades_tiquets_pendents', JSON.stringify(tiquets));
@@ -22,9 +33,13 @@ const Tiquet = () => {
 
     const nouTiquet = {
       id: tiquetsPendents.length > 0 ? tiquetsPendents[tiquetsPendents.length - 1].id + 1 : 1,
+      data: new Date().toLocaleDateString(),
       aula,
+      grup: 'No especificat',
       ordinador,
       descripcio,
+      alumne: usuario?.email || 'Desconegut',
+      email: usuario?.email || '',
     };
 
     const tiquetsActualitzats = [...tiquetsPendents, nouTiquet];
@@ -32,6 +47,8 @@ const Tiquet = () => {
 
     navigate('/panel');
   };
+
+  if (!usuario) return null;
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>

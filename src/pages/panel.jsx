@@ -40,12 +40,30 @@ export default function Panel() {
   const resolverTicket = (id) => {
     const ticket = ticketsPendientes.find(ticket => ticket.id === id);
     if (ticket) {
+      // Obtener comentarios para ese ticket desde localStorage
+      const storedComentarios = JSON.parse(localStorage.getItem('comentarios')) || [];
+      const comentariosTicket = storedComentarios.filter(c => c.ticketId === id);
+
       const nuevosPendientes = ticketsPendientes.filter(t => t.id !== id);
-      const nuevosResueltos = [...ticketsResueltos, { ...ticket, dataResolucio: new Date().toLocaleDateString() }];
+
+      // Crear ticket resuelto con comentarios incluidos
+      const ticketResuelto = {
+        ...ticket,
+        dataResolucio: new Date().toLocaleDateString(),
+        comentarios: comentariosTicket,
+      };
+
+      const nuevosResueltos = [...ticketsResueltos, ticketResuelto];
+
       setTicketsPendientes(nuevosPendientes);
       setTicketsResueltos(nuevosResueltos);
+
       localStorage.setItem('dades_tiquets_pendents', JSON.stringify(nuevosPendientes));
       localStorage.setItem('dades_tiquets_resolts', JSON.stringify(nuevosResueltos));
+
+      // Opcional: eliminar comentarios de localStorage para tickets pendientes, ya que ahora están en ticket resuelto
+      const comentariosActualizados = storedComentarios.filter(c => c.ticketId !== id);
+      localStorage.setItem('comentarios', JSON.stringify(comentariosActualizados));
     }
   };
 
@@ -60,24 +78,21 @@ export default function Panel() {
 
   if (loading || !usuario) return <p>Cargando...</p>;
 
-  const rol = usuario.rol?.toLowerCase();
-  const esEstandar = rol === 'estandard' || rol === 'usuari estàndard';
-  const esAdmin = rol === 'admin' || rol === 'administrador';
-  const esProfessor = rol === 'professor' || rol === 'professor';
+  const esEstandar = usuario.rol === 'estandard' || usuario.rol === 'Usuari' || usuario.rol === 'Usuari Estàndard';
+  const esProfessor = usuario.rol === 'professor' || usuario.rol === 'Professor';
+  const esAdmin = usuario.rol === 'admin' || usuario.rol === 'Administrador';
 
-  const puedeComentar = esAdmin || esProfessor;
-  const puedeEliminar = esAdmin;
-  const puedeCrearProyecto = esAdmin;
-  const puedeGestionarUsuarios = esAdmin;
-
-  const ticketsUsuario = (tickets) =>
+  const ticketsVisibles = (tickets) =>
     esEstandar ? tickets.filter(t => t.email === usuario.email) : tickets;
 
   const nombreRol =
-    esEstandar ? 'Usuari Estàndard' :
-    esProfessor ? 'Professor' :
-    esAdmin ? 'Administrador' :
-    'Desconegut';
+    esEstandar
+      ? 'Usuari Estàndard'
+      : esProfessor
+      ? 'Professor'
+      : esAdmin
+      ? 'Administrador'
+      : 'Desconegut';
 
   return (
     <main className="margene">
@@ -89,16 +104,18 @@ export default function Panel() {
           </h4>
         </div>
         <div>
-          {puedeCrearProyecto && (
-            <button className="btn btn-outline-dark me-2" onClick={() => navigate('/proyecto')}>
-              <i className="bi bi-folder-plus me-1"></i> Crear Proyecto
+          {(esAdmin || esProfessor || esEstandar) && (
+            <button className="btn btn-outline-dark me-2" onClick={() => navigate('/ticket')}>
+              <i className="bi bi-plus-circle me-1"></i> Crear Ticket
             </button>
           )}
-          {puedeGestionarUsuarios && (
+
+          {esAdmin && (
             <button className="btn btn-outline-primary me-2" onClick={() => navigate('/usuaris')}>
               <i className="bi bi-people-fill me-1"></i> Gestionar Usuarios
             </button>
           )}
+
           <button className="btn btn-danger" onClick={handleLogout}>
             <i className="bi bi-box-arrow-right me-1"></i> Cerrar sesión
           </button>
@@ -117,12 +134,12 @@ export default function Panel() {
             <th>Ordenador</th>
             <th>Descripción</th>
             <th>Alumno</th>
-            {(!esEstandar && (puedeComentar || puedeEliminar)) && <th>Acciones</th>}
+            {(esProfessor || esAdmin) && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
-          {ticketsUsuario(ticketsPendientes).length > 0 ? (
-            ticketsUsuario(ticketsPendientes).map(ticket => (
+          {ticketsVisibles(ticketsPendientes).length > 0 ? (
+            ticketsVisibles(ticketsPendientes).map(ticket => (
               <tr key={ticket.id}>
                 <td>{ticket.id}</td>
                 <td>{ticket.data}</td>
@@ -131,34 +148,43 @@ export default function Panel() {
                 <td>{ticket.ordinador}</td>
                 <td>{ticket.descripcio}</td>
                 <td>{ticket.alumne}</td>
-                {(!esEstandar && (puedeComentar || puedeEliminar)) && (
+                {(esProfessor || esAdmin) && (
                   <td>
-                    {puedeEliminar && (
+                    {esAdmin && (
                       <>
-                        <button
-                          className="btn btn-danger btn-sm me-2"
-                          onClick={() => eliminarTicket(ticket.id)}
-                          title="Eliminar"
-                        >
-                          🗑️
-                        </button>
                         <button
                           className="btn btn-success btn-sm me-2"
                           onClick={() => resolverTicket(ticket.id)}
                           title="Resolver"
                         >
-                          ✅
+                          ✅ Resolver
+                        </button>
+                        <button
+                          className="btn btn-warning btn-sm me-2"
+                          onClick={() => navigate(`/editar/${ticket.id}`)}
+                          title="Editar"
+                        >
+                          ✏️ Editar
+                        </button>
+
+                        {(esProfessor || esAdmin) && (
+                          <button
+                            className="btn btn-info btn-sm me-2"
+                            onClick={() => handleComentarios(ticket.id)}
+                            title="Comentarios"
+                          >
+                            💬 Comentarios
+                          </button>
+                        )}
+
+                        <button
+                          className="btn btn-danger btn-sm me-2"
+                          onClick={() => eliminarTicket(ticket.id)}
+                          title="Eliminar"
+                        >
+                          🗑️ Eliminar
                         </button>
                       </>
-                    )}
-                    {puedeComentar && (
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => handleComentarios(ticket.id)}
-                        title="Comentarios"
-                      >
-                        💬
-                      </button>
                     )}
                   </td>
                 )}
@@ -166,7 +192,7 @@ export default function Panel() {
             ))
           ) : (
             <tr>
-              <td colSpan={esEstandar ? 7 : 8} className="text-center">
+              <td colSpan={(esProfessor || esAdmin) ? 8 : 7} className="text-center">
                 No hay tickets pendientes
               </td>
             </tr>
@@ -187,12 +213,12 @@ export default function Panel() {
             <th>Ordenador</th>
             <th>Descripción</th>
             <th>Alumno</th>
-            {(!esEstandar && (puedeComentar || puedeEliminar)) && <th>Acciones</th>}
+            {(esProfessor || esAdmin) && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
-          {ticketsUsuario(ticketsResueltos).length > 0 ? (
-            ticketsUsuario(ticketsResueltos).map(ticket => (
+          {ticketsVisibles(ticketsResueltos).length > 0 ? (
+            ticketsVisibles(ticketsResueltos).map(ticket => (
               <tr key={ticket.id}>
                 <td>{ticket.id}</td>
                 <td>{ticket.data}</td>
@@ -202,24 +228,24 @@ export default function Panel() {
                 <td>{ticket.ordinador}</td>
                 <td>{ticket.descripcio}</td>
                 <td>{ticket.alumne}</td>
-                {(!esEstandar && (puedeComentar || puedeEliminar)) && (
+                {(esProfessor || esAdmin) && (
                   <td>
-                    {puedeEliminar && (
+                    {(esProfessor || esAdmin) && (
+                      <button
+                        className="btn btn-info btn-sm me-2"
+                        onClick={() => handleComentarios(ticket.id)}
+                        title="Comentarios"
+                      >
+                        💬 Comentarios
+                      </button>
+                    )}
+                    {esAdmin && (
                       <button
                         className="btn btn-danger btn-sm me-2"
                         onClick={() => eliminarTicketResuelto(ticket.id)}
                         title="Eliminar"
                       >
-                        🗑️
-                      </button>
-                    )}
-                    {puedeComentar && (
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => handleComentarios(ticket.id)}
-                        title="Comentarios"
-                      >
-                        💬
+                        🗑️ Eliminar
                       </button>
                     )}
                   </td>
@@ -228,7 +254,7 @@ export default function Panel() {
             ))
           ) : (
             <tr>
-              <td colSpan={esEstandar ? 8 : 9} className="text-center">
+              <td colSpan={(esProfessor || esAdmin) ? 9 : 8} className="text-center">
                 No hay tickets resueltos
               </td>
             </tr>

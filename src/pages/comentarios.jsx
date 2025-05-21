@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../Comentarios.css';
 
-
 export default function Comentarios() {
   const { id } = useParams();
   const [ticket, setTicket] = useState(null);
@@ -14,15 +13,26 @@ export default function Comentarios() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedTickets = JSON.parse(localStorage.getItem('dades_tiquets_pendents')) || [];
-    const ticketEncontrado = storedTickets.find(ticket => ticket.id === parseInt(id));
+    const storedTicketsPendientes = JSON.parse(localStorage.getItem('dades_tiquets_pendents')) || [];
+    const storedTicketsResueltos = JSON.parse(localStorage.getItem('dades_tiquets_resolts')) || [];
+
+    let ticketEncontrado = storedTicketsPendientes.find(t => t.id === parseInt(id));
+    let comentariosTicket = [];
 
     if (ticketEncontrado) {
-      setTicket(ticketEncontrado);
+      // Ticket pendiente: comentarios guardados en localStorage "comentarios"
       const storedComentarios = JSON.parse(localStorage.getItem('comentarios')) || [];
-      const comentariosTicket = storedComentarios.filter(comentario => comentario.ticketId === parseInt(id));
-      setComentarios(comentariosTicket);
+      comentariosTicket = storedComentarios.filter(c => c.ticketId === parseInt(id));
+    } else {
+      // Buscar en tickets resueltos
+      ticketEncontrado = storedTicketsResueltos.find(t => t.id === parseInt(id));
+      if (ticketEncontrado && ticketEncontrado.comentarios) {
+        comentariosTicket = ticketEncontrado.comentarios;
+      }
     }
+
+    setTicket(ticketEncontrado);
+    setComentarios(comentariosTicket);
   }, [id]);
 
   const handleNuevoComentario = () => {
@@ -35,17 +45,20 @@ export default function Comentarios() {
         fecha: fechaComentario
       };
 
-      const storedComentarios = JSON.parse(localStorage.getItem('comentarios')) || [];
-      const comentariosActualizados = [...storedComentarios, nuevoComentario];
+      // Solo se pueden añadir comentarios a tickets pendientes
+      if (ticket && !ticket.dataResolucio) {
+        const storedComentarios = JSON.parse(localStorage.getItem('comentarios')) || [];
+        const comentariosActualizados = [...storedComentarios, nuevoComentario];
 
-      localStorage.setItem('comentarios', JSON.stringify(comentariosActualizados));
-      setComentarios(comentariosActualizados.filter(c => c.ticketId === parseInt(id)));
+        localStorage.setItem('comentarios', JSON.stringify(comentariosActualizados));
+        setComentarios(comentariosActualizados.filter(c => c.ticketId === parseInt(id)));
 
-      // Reset
-      setAutor("");
-      setTitulo("");
-      setComentarioNuevo("");
-      setFechaComentario("");
+        // Reset campos
+        setAutor("");
+        setTitulo("");
+        setComentarioNuevo("");
+        setFechaComentario("");
+      }
     }
   };
 
@@ -54,63 +67,73 @@ export default function Comentarios() {
       <div className="comentarios-container">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="fw-bold text-secondary">Comentarios</h2>
-          <button className="btn btn-link" onClick={() => navigate(-1)}>&lt; Volver</button>
+          <button className="btn btn-link" onClick={() => navigate(-1)}>
+            &lt; Volver
+          </button>
         </div>
 
-        {ticket && (
+        {ticket ? (
           <>
-            <h5 className="mb-4 text-muted">Código ticket: <strong>{ticket.id}</strong></h5>
+            <h5 className="mb-4 text-muted">
+              Código ticket: <strong>{ticket.id}</strong>
+            </h5>
 
-            <div className="card p-4 shadow-sm comentario-form">
-              <div className="mb-3">
-                <label className="form-label">Título:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={titulo}
-                  onChange={(e) => setTitulo(e.target.value)}
-                  placeholder="Título del comentario"
-                />
-              </div>
+            {ticket.dataResolucio ? (
+              <p className="text-info">
+                Este ticket está resuelto, no se pueden añadir nuevos comentarios.
+              </p>
+            ) : (
+              <div className="card p-4 shadow-sm comentario-form">
+                <div className="mb-3">
+                  <label className="form-label">Título:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
+                    placeholder="Título del comentario"
+                  />
+                </div>
 
-              <div className="mb-3">
-                <label className="form-label">Comentario:</label>
-                <textarea
-                  className="form-control"
-                  value={comentarioNuevo}
-                  onChange={(e) => setComentarioNuevo(e.target.value)}
-                  rows="3"
-                  placeholder="Escribe tu comentario"
-                />
-              </div>
+                <div className="mb-3">
+                  <label className="form-label">Comentario:</label>
+                  <textarea
+                    className="form-control"
+                    value={comentarioNuevo}
+                    onChange={(e) => setComentarioNuevo(e.target.value)}
+                    rows="3"
+                    placeholder="Escribe tu comentario"
+                  />
+                </div>
 
-              <div className="mb-3">
-                <label className="form-label">Fecha:</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={fechaComentario}
-                  onChange={(e) => setFechaComentario(e.target.value)}
-                />
-              </div>
+                <div className="mb-3">
+                  <label className="form-label">Fecha:</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={fechaComentario}
+                    onChange={(e) => setFechaComentario(e.target.value)}
+                  />
+                </div>
 
-              <div className="mb-3">
-                <label className="form-label">Autor:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={autor}
-                  onChange={(e) => setAutor(e.target.value)}
-                  placeholder="Tu nombre"
-                />
-              </div>
+                <div className="mb-3">
+                  <label className="form-label">Autor:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={autor}
+                    onChange={(e) => setAutor(e.target.value)}
+                    placeholder="Tu nombre"
+                  />
+                </div>
 
-              <div className="text-end">
-                <button className="btn btn-success px-4" onClick={handleNuevoComentario}>
-                  Añadir comentario
-                </button>
+                <div className="text-end">
+                  <button className="btn btn-success px-4" onClick={handleNuevoComentario}>
+                    Añadir comentario
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="mt-5">
               {comentarios.length > 0 ? (
@@ -128,6 +151,8 @@ export default function Comentarios() {
               )}
             </div>
           </>
+        ) : (
+          <p className="text-danger">Ticket no encontrado.</p>
         )}
       </div>
     </div>

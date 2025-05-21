@@ -75,7 +75,7 @@ function Registro() {
               <option value="">-- Elige un rol --</option>
               <option value="estandard">Usuari Estàndard</option>
               <option value="professor">Professor/Admin</option>
-              <option value="administrador">Administrador</option>
+              <option value="admin">Administrador</option>
             </select>
           </div>
 

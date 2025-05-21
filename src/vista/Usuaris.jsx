@@ -2,18 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const rolsVisibles = {
-  estandard: "Usuari Estàndard",
-  professor: "Professor",
-  admin: "Administrador",
-};
-
-const rolsInterns = {
-  "Usuari Estàndard": "estandard",
-  "Professor": "professor",
-  "Administrador": "admin",
-};
-
 const Usuaris = () => {
   const [usuaris, setUsuaris] = useState([]);
   const [usuariActiu, setUsuariActiu] = useState(null);
@@ -76,6 +64,8 @@ const Usuaris = () => {
     alert("Rol actualitzat correctament.");
     navigate("/panel");
   };
+
+  const esAdmin = usuariActiu?.rol === "admin";
 
   return (
     <>
@@ -146,7 +136,7 @@ const Usuaris = () => {
               <tr>
                 <th>Email</th>
                 <th>Rol</th>
-                <th className="text-center">Accions</th>
+                {esAdmin && <th className="text-center">Accions</th>}
               </tr>
             </thead>
             <tbody>
@@ -159,33 +149,36 @@ const Usuaris = () => {
                         className="form-select form-select-sm"
                         value={rolsTemporals[user.email]}
                         onChange={(e) => actualitzarRol(user.email, e.target.value)}
+                        disabled={!esAdmin}
                       >
                         <option value="estandard">Usuari Estàndard</option>
                         <option value="professor">Professor</option>
                         <option value="admin">Administrador</option>
                       </select>
                     </td>
-                    <td className="text-center">
-                      <div className="d-flex justify-content-center gap-2">
-                        <button
-                          className="btn btn-sm btn-outline-success"
-                          onClick={() => aplicarCanvis(user.email)}
-                        >
-                          Aplicar
-                        </button>
-                        <button
-                          className="btn btn-delete btn-sm"
-                          onClick={() => eliminarUsuari(user.email)}
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </td>
+                    {esAdmin && (
+                      <td className="text-center">
+                        <div className="d-flex justify-content-center gap-2">
+                          <button
+                            className="btn btn-sm btn-outline-success"
+                            onClick={() => aplicarCanvis(user.email)}
+                          >
+                            Aplicar
+                          </button>
+                          <button
+                            className="btn btn-delete btn-sm"
+                            onClick={() => eliminarUsuari(user.email)}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3" className="text-center fst-italic py-4 text-muted">
+                  <td colSpan={esAdmin ? "3" : "2"} className="text-center fst-italic py-4 text-muted">
                     No hi ha usuaris registrats.
                   </td>
                 </tr>
