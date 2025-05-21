@@ -2,46 +2,79 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const rolsVisibles = {
+  estandard: "Usuari Estàndard",
+  professor: "Professor",
+  admin: "Administrador",
+};
+
+const rolsInterns = {
+  "Usuari Estàndard": "estandard",
+  "Professor": "professor",
+  "Administrador": "admin",
+};
+
 const Usuaris = () => {
   const [usuaris, setUsuaris] = useState([]);
   const [usuariActiu, setUsuariActiu] = useState(null);
+  const [rolsTemporals, setRolsTemporals] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     const usuarisGuardats = JSON.parse(localStorage.getItem("dades_usuaris")) || [];
-    const usuariActiuData = JSON.parse(localStorage.getItem("usuarioActual")) || null; // nombre que usas en login
+    const usuariActiuData = JSON.parse(localStorage.getItem("usuarioActual")) || null;
 
     const usuarisAmbRol = usuarisGuardats.map((user) => ({
       ...user,
-      rol: user.rol || "Usuari",
+      rol: user.rol || "estandard",
     }));
+
+    const rolsInicials = {};
+    usuarisAmbRol.forEach((u) => {
+      rolsInicials[u.email] = u.rol;
+    });
 
     setUsuaris(usuarisAmbRol);
     setUsuariActiu(usuariActiuData);
-    localStorage.setItem("dades_usuaris", JSON.stringify(usuarisAmbRol));
+    setRolsTemporals(rolsInicials);
   }, []);
 
-  // Función para eliminar usuario por email (único)
   const eliminarUsuari = (email) => {
     const usuarisActualitzats = usuaris.filter((user) => user.email !== email);
     setUsuaris(usuarisActualitzats);
     localStorage.setItem("dades_usuaris", JSON.stringify(usuarisActualitzats));
 
     if (usuariActiu && usuariActiu.email === email) {
-      alert("Usuario activo eliminado. Redirigiendo al registro...");
+      alert("Usuari actiu eliminat. Redirigint al registre...");
       localStorage.removeItem("usuarioActual");
       navigate("/registro");
     }
   };
 
-  // Cambiar rol solo del usuario seleccionado (por email)
-  const canviarRol = (email, nouRol) => {
+  const actualitzarRol = (email, rolSeleccionat) => {
+    setRolsTemporals((prev) => ({
+      ...prev,
+      [email]: rolSeleccionat,
+    }));
+  };
+
+  const aplicarCanvis = (email) => {
+    const nouRol = rolsTemporals[email];
+
     const usuarisActualitzats = usuaris.map((user) =>
       user.email === email ? { ...user, rol: nouRol } : user
     );
 
     setUsuaris(usuarisActualitzats);
     localStorage.setItem("dades_usuaris", JSON.stringify(usuarisActualitzats));
+
+    if (usuariActiu?.email === email) {
+      const nouUsuariActiu = { ...usuariActiu, rol: nouRol };
+      localStorage.setItem("usuarioActual", JSON.stringify(nouUsuariActiu));
+    }
+
+    alert("Rol actualitzat correctament.");
+    navigate("/panel");
   };
 
   return (
@@ -112,10 +145,8 @@ const Usuaris = () => {
             <thead>
               <tr>
                 <th>Email</th>
-                <th style={{ width: "140px" }}>Rol</th>
-                <th style={{ width: "120px" }} className="text-center">
-                  Accions
-                </th>
+                <th>Rol</th>
+                <th className="text-center">Accions</th>
               </tr>
             </thead>
             <tbody>
@@ -126,22 +157,29 @@ const Usuaris = () => {
                     <td>
                       <select
                         className="form-select form-select-sm"
-                        value={user.rol}
-                        onChange={(e) => canviarRol(user.email, e.target.value)}
-                        aria-label={`Canviar rol de ${user.email}`}
+                        value={rolsTemporals[user.email]}
+                        onChange={(e) => actualitzarRol(user.email, e.target.value)}
                       >
-                        <option value="Admin">Admin</option>
-                        <option value="Usuari">Usuari</option>
+                        <option value="estandard">Usuari Estàndard</option>
+                        <option value="professor">Professor</option>
+                        <option value="admin">Administrador</option>
                       </select>
                     </td>
                     <td className="text-center">
-                      <button
-                        className="btn btn-delete btn-sm"
-                        onClick={() => eliminarUsuari(user.email)}
-                        title={`Eliminar usuari ${user.email}`}
-                      >
-                        Eliminar
-                      </button>
+                      <div className="d-flex justify-content-center gap-2">
+                        <button
+                          className="btn btn-sm btn-outline-success"
+                          onClick={() => aplicarCanvis(user.email)}
+                        >
+                          Aplicar
+                        </button>
+                        <button
+                          className="btn btn-delete btn-sm"
+                          onClick={() => eliminarUsuari(user.email)}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

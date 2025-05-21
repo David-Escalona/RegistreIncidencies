@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function Registro() {
   const [email, setEmail] = useState('');
   const [contrasenya, setContrasenya] = useState('');
+  const [rol, setRol] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -17,7 +18,12 @@ function Registro() {
       return;
     }
 
-    const nouUsuari = { email, contrasenya };
+    if (!rol) {
+      alert('Por favor, selecciona un rol');
+      return;
+    }
+
+    const nouUsuari = { email, contrasenya, rol };
     usuaris.push(nouUsuari);
     localStorage.setItem('dades_usuaris', JSON.stringify(usuaris));
 
@@ -55,6 +61,22 @@ function Registro() {
               required
               placeholder="••••••••"
             />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="rol" className="form-label">Selecciona un rol</label>
+            <select
+              id="rol"
+              className="form-select"
+              value={rol}
+              onChange={(e) => setRol(e.target.value)}
+              required
+            >
+              <option value="">-- Elige un rol --</option>
+              <option value="estandard">Usuari Estàndard</option>
+              <option value="professor">Professor/Admin</option>
+              <option value="administrador">Administrador</option>
+            </select>
           </div>
 
           <button type="submit" className="btn btn-dark w-100 mt-3">
