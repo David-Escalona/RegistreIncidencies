@@ -61,7 +61,7 @@ export default function Panel() {
       localStorage.setItem('dades_tiquets_pendents', JSON.stringify(nuevosPendientes));
       localStorage.setItem('dades_tiquets_resolts', JSON.stringify(nuevosResueltos));
 
-      // Opcional: eliminar comentarios de localStorage para tickets pendientes, ya que ahora están en ticket resuelto
+      // Opcional: eliminar comentarios de localStorage para tickets pendientes
       const comentariosActualizados = storedComentarios.filter(c => c.ticketId !== id);
       localStorage.setItem('comentarios', JSON.stringify(comentariosActualizados));
     }
@@ -150,39 +150,40 @@ export default function Panel() {
                 <td>{ticket.alumne}</td>
                 {(esProfessor || esAdmin) && (
                   <td>
-                    {esAdmin && (
+                    {(esAdmin || esProfessor) && (
                       <>
-                        <button
-                          className="btn btn-success btn-sm me-2"
-                          onClick={() => resolverTicket(ticket.id)}
-                          title="Resolver"
-                        >
-                          ✅ Resolver
-                        </button>
-                        <button
-                          className="btn btn-warning btn-sm me-2"
-                          onClick={() => navigate(`/editar/${ticket.id}`)}
-                          title="Editar"
-                        >
-                          ✏️ Editar
-                        </button>
-
-                        {(esProfessor || esAdmin) && (
-                          <button
-                            className="btn btn-info btn-sm me-2"
-                            onClick={() => handleComentarios(ticket.id)}
-                            title="Comentarios"
-                          >
-                            💬 Comentarios
-                          </button>
+                        {esAdmin && (
+                          <>
+                            <button
+                              className="btn btn-success btn-sm me-2"
+                              onClick={() => resolverTicket(ticket.id)}
+                              title="Resolver"
+                            >
+                              ✅ Resolver
+                            </button>
+                            <button
+                              className="btn btn-warning btn-sm me-2"
+                              onClick={() => navigate(`/editar/${ticket.id}`)}
+                              title="Editar"
+                            >
+                              ✏️ Editar
+                            </button>
+                            <button
+                              className="btn btn-danger btn-sm me-2"
+                              onClick={() => eliminarTicket(ticket.id)}
+                              title="Eliminar"
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </>
                         )}
-
+                        {/* Botón Comentarios visible para profesor y admin */}
                         <button
-                          className="btn btn-danger btn-sm me-2"
-                          onClick={() => eliminarTicket(ticket.id)}
-                          title="Eliminar"
+                          className="btn btn-info btn-sm me-2"
+                          onClick={() => handleComentarios(ticket.id)}
+                          title="Comentarios"
                         >
-                          🗑️ Eliminar
+                          💬 Comentarios
                         </button>
                       </>
                     )}
