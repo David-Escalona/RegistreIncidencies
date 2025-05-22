@@ -9,14 +9,24 @@ const Usuaris = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const usuarisGuardats = JSON.parse(localStorage.getItem("dades_usuaris")) || [];
+    const dadesUsuaris = JSON.parse(localStorage.getItem("dades_usuaris")) || [];
+    const loginUsers = JSON.parse(localStorage.getItem("usuarios")) || [];
     const usuariActiuData = JSON.parse(localStorage.getItem("usuarioActual")) || null;
 
-    const usuarisAmbRol = usuarisGuardats.map((user) => ({
+    // Eliminar duplicados por email
+    const correusExistents = new Set(dadesUsuaris.map(user => user.email));
+    const nousUsuaris = loginUsers.filter(user => !correusExistents.has(user.email));
+
+    // Combinar ambos arrays
+    const totsElsUsuaris = [...dadesUsuaris, ...nousUsuaris];
+
+    // Asegurar que todos tengan rol
+    const usuarisAmbRol = totsElsUsuaris.map((user) => ({
       ...user,
       rol: user.rol || "estandard",
     }));
 
+    // Inicializar roles temporales
     const rolsInicials = {};
     usuarisAmbRol.forEach((u) => {
       rolsInicials[u.email] = u.rol;
