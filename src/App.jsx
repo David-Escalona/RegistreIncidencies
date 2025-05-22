@@ -7,7 +7,8 @@ import Registro from './pages/registro';
 import Comentarios from './pages/comentarios';
 import Tiquet from './vista/ticket';
 import Usuaris from './vista/Usuaris';
-import EditarTicket from './pages/EditarTicket'; 
+import EditarTicket from './pages/EditarTicket';
+import usuariosPorDefecto from './data/usuariosDefault'; // ✅ importamos los usuarios por defecto
 
 function getTiquets(key) {
   const tiquets = localStorage.getItem(key);
@@ -30,6 +31,12 @@ function App() {
   const [tiquetsResolts, setTiquetsResolts] = useState([]);
 
   useEffect(() => {
+    // ✅ Añadimos los usuarios por defecto si no existen
+    const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios')) || [];
+    if (usuariosExistentes.length === 0) {
+      localStorage.setItem('usuarios', JSON.stringify(usuariosPorDefecto));
+    }
+
     const tiquetsPendentsData = getTiquets('dades_tiquets_pendents');
     const tiquetsResoltsData = getTiquets('dades_tiquets_resolts');
 

@@ -31,17 +31,13 @@ export default function Header() {
 
           {/* Centro: Botones de navegación */}
           <div className="d-flex justify-content-center gap-2">
-            {!usuarioActual ? (
-              <>
-                <Link className="btn btn-dark" to="/login">Inicio Sesión</Link>
-                <Link className="btn btn-dark" to="/registro">Registro</Link>
-              </>
-            ) : (
+            <Link className="btn btn-dark" to="/login">Inicio Sesión</Link>
+            <Link className="btn btn-dark" to="/registro">Registro</Link>
+
+            {usuarioActual?.rol === "admin" && (
               <>
                 <Link className="btn btn-dark" to="/panel">Panel</Link>
                 <Link className="btn btn-dark" to="/usuaris">Usuarios</Link>
-                <Link className="btn btn-dark" to="/login">Login</Link>
-                <Link className="btn btn-dark" to="/registro">Registro</Link>
               </>
             )}
           </div>

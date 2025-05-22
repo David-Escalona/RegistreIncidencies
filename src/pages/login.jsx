@@ -1,32 +1,33 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const users = JSON.parse(localStorage.getItem('dades_usuaris')) || [];
-    const user = users.find(user => user.email === email && user.contrasenya === password);
+    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-    if (user) {
-      localStorage.setItem('usuarioActual', JSON.stringify(user));
-      window.dispatchEvent(new Event('usuarioActualizado'));
-      setError(null);
-      navigate('/panel');
+    const usuarioEncontrado = usuarios.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (usuarioEncontrado) {
+      localStorage.setItem("usuarioActual", JSON.stringify(usuarioEncontrado));
+      navigate("/panel");
     } else {
-      setError('Usuario o contraseña incorrectos');
+      setError("Correo o contraseña incorrectos");
     }
   };
 
   return (
-    <main className="container d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
-      <div className="card shadow-lg p-4 border-0" style={{ maxWidth: '420px', width: '100%' }}>
-        <h2 className="text-center mb-4 fw-bold text-primary">
+    <main className="container d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
+      <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", width: "100%" }}>
+        <h2 className="text-center mb-4 text-primary">
           <i className="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
         </h2>
 
@@ -34,6 +35,7 @@ export default function Login() {
           <div className="mb-3">
             <label htmlFor="email" className="form-label">Correo electrónico</label>
             <input
+              id="email"
               type="email"
               className="form-control"
               placeholder="usuario@mail.com"
@@ -44,10 +46,12 @@ export default function Login() {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="pass" className="form-label">Contraseña</label>
+            <label htmlFor="password" className="form-label">Contraseña</label>
             <input
+              id="password"
               type="password"
               className="form-control"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -56,7 +60,7 @@ export default function Login() {
 
           {error && <div className="alert alert-danger mt-2">{error}</div>}
 
-          <button type="submit" className="btn btn-dark w-100 mt-3">
+          <button type="submit" className="btn btn-dark w-100">
             <i className="bi bi-arrow-right-circle me-2"></i>Entrar
           </button>
         </form>
@@ -64,3 +68,5 @@ export default function Login() {
     </main>
   );
 }
+
+export default Login;
